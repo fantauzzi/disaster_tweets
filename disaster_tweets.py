@@ -111,7 +111,7 @@ def main(params: DictConfig) -> None:
         mlflow_run_data = mlflow_client.get_run(mf.active_run().info.run_id).data
         info(f'Started MLFlow run: {mlflow_run_data.tags["mlflow.runName"]}')
 
-        mf.log_artifact(local_path=f'{get_original_cwd()}/params.yaml')
+        # mf.log_artifact(local_path=f'{get_original_cwd()}/params.yaml')
         unfolded_params = unfold_config(params)
         mf.log_params(unfolded_params)
         # mf.tensorflow.autolog(log_models=False)

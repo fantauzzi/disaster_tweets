@@ -1,6 +1,9 @@
 outputs
 mlruns
 model
+data/train
+data/test
+data/val
 
 ### JupyterNotebooks template
 # gitignore template for Jupyter Notebooks

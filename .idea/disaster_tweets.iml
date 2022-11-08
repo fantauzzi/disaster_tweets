@@ -4,6 +4,12 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/mlruns" />
       <excludeFolder url="file://$MODULE_DIR$/outputs" />
+      <excludeFolder url="file://$MODULE_DIR$/src/preprocess/mlruns" />
+      <excludeFolder url="file://$MODULE_DIR$/src/preprocess/outputs" />
+      <excludeFolder url="file://$MODULE_DIR$/model" />
+      <excludeFolder url="file://$MODULE_DIR$/data/test" />
+      <excludeFolder url="file://$MODULE_DIR$/data/train" />
+      <excludeFolder url="file://$MODULE_DIR$/data/val" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
