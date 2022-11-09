@@ -1,5 +1,6 @@
 main:
-  # log_file: log.txt
+  # If no MLFlow run is provided, the script will start its own run
+  run_id:
   source_data: data/train.csv
   train_data: data/train
   val_data: data/val
