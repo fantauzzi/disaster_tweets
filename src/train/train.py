@@ -37,7 +37,7 @@ def unfold_config(config: DictConfig | dict) -> dict[str, str]:
     return res
 
 
-@hydra.main(version_base=None, config_path=".", config_name="params")
+@hydra.main(version_base=None, config_path="../../config", config_name="params")
 def main(params: DictConfig) -> None:
     # Note, Hydra by default sends all log messages both to the console and a log file.
     # See https://hydra.cc/docs/1.2/tutorials/basic/running_your_app/logging/
@@ -52,7 +52,7 @@ def main(params: DictConfig) -> None:
     trained_model = params['main']['trained_model']
     seed = params['main']['seed']
     # Note: to use Databricks, first make a Databricks account, install databricks-cli and run  `databricks configure`
-    tracking_uri = 'databricks' if params['main']['use_databricks'] else 'mlruns'
+    tracking_uri = 'databricks' if params['main']['use_databricks'] else '../../mlruns'
     info(f'Tracking info will go to: {tracking_uri}')
     mf.set_tracking_uri(tracking_uri)
     experiment_name = params['main']['experiment_name']
@@ -61,24 +61,6 @@ def main(params: DictConfig) -> None:
 
     # Load and split the dataset
     info('Loading dataset ...')
-    """
-    features = Features({'id': Value(dtype='string', id=None),
-                         'keyword': Value(dtype='string', id=None),
-                         'location': Value(dtype='string', id=None),
-                         'text': Value(dtype='string', id=None),
-                         'target': ClassLabel(num_classes=2, names=['0', '1'], id=None)})
-    dataset = Dataset.from_csv('data/train.csv', features=features)
-    dataset = dataset.remove_columns(['id', 'keyword', 'location'])
-    dataset = dataset.rename_column('target', 'label')
-    dataset = dataset.train_test_split(test_size=.2, stratify_by_column='label', seed=seed)
-    dataset_test = dataset['test']
-    dataset = dataset['train']
-    dataset = dataset.train_test_split(test_size=.2, stratify_by_column='label', seed=seed)
-    dataset_val = dataset['test']
-    dataset = dataset['train']
-    info('... dataset loaded.')
-    info(f'Train set size: {len(dataset)}   Val. set size: {len(dataset_val)}   Test set size: {len(dataset_test)}')
-    """
 
     # Fetch and load into memory the fine-tuned model ready for inference, if available, otherwise the pre-trained
     # model, to be fine-tuned before inference
@@ -135,12 +117,14 @@ def main(params: DictConfig) -> None:
         # If the pre-trained model hasn't been fine-tuned, then fine-tune and evaluate it now, and send it to MLFlow
         # as an artifact (not using MLFlow models here)
         if local_trained_model is None or not Path(local_trained_model).exists():
+            model_dir = '../../model'
             info('No fine-tuned mode available, therefore fine-tuning the pre-trained model')
             model.fit(tf_dataset, validation_data=tf_dataset_val, epochs=num_epochs)
-            model.save_pretrained(save_directory='model')
-            info(f'Saved fine-tuned model in directory `model`')
-            mf.log_artifact(local_path='model')
-            info(f'The fine-tuned model has been logged with MLFlow; directory `model` can now be removed, if desired')
+            model.save_pretrained(save_directory=model_dir)
+            info(f'Saved fine-tuned model in directory {model_dir}')
+            mf.log_artifact(local_path=model_dir)
+            info(
+                f'The fine-tuned model has been logged with MLFlow; directory {model_dir} can now be removed, if desired')
 
         # Test the fine-tuned model
         test_batch_size = params['test']['batch_size']

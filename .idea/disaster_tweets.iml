@@ -10,6 +10,7 @@
       <excludeFolder url="file://$MODULE_DIR$/data/test" />
       <excludeFolder url="file://$MODULE_DIR$/data/train" />
       <excludeFolder url="file://$MODULE_DIR$/data/val" />
+      <excludeFolder url="file://$MODULE_DIR$/src/train/outputs" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

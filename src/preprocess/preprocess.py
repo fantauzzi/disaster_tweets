@@ -11,7 +11,7 @@ from hydra.core.hydra_config import HydraConfig
 from omegaconf import DictConfig, OmegaConf
 
 
-def does_run_exist(run_id: str) -> bool:
+def run_exists(run_id: str) -> bool:
     try:
         mlflow.get_run(run_id)
     except mlflow.exceptions.MlflowException:
