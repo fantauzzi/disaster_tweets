@@ -10,8 +10,7 @@ main:
   use_databricks: False
   # trained_model is the already fine-tuned model to use for inference. If you want to fine-tune a model instead,
   # and use it for inference, then set trained_model to False
-  trained_model:
-  # dbfs:/databricks/mlflow-tracking/159479133581807/63b26d45b3e04afd9a01719429e8761c/artifacts/model
+  trained_model: /home/fanta/workspace/disaster_tweets/src/preprocess/../../mlruns/1/d397d207efaa499a986b47fa8d0c2dfd/artifacts/model
   seed: 42
 train:
   num_epochs: 2

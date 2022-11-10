@@ -2,6 +2,7 @@
 <module type="PYTHON_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/mlruns" />
       <excludeFolder url="file://$MODULE_DIR$/outputs" />
       <excludeFolder url="file://$MODULE_DIR$/src/preprocess/mlruns" />
@@ -11,6 +12,7 @@
       <excludeFolder url="file://$MODULE_DIR$/data/train" />
       <excludeFolder url="file://$MODULE_DIR$/data/val" />
       <excludeFolder url="file://$MODULE_DIR$/src/train/outputs" />
+      <excludeFolder url="file://$MODULE_DIR$/data" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

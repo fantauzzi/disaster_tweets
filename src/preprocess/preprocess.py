@@ -1,46 +1,26 @@
+import sys
 from pathlib import Path
 import logging
 from logging import warning, info, error
-
-import mlflow
 from datasets import Dataset, Value, ClassLabel, Features
 import mlflow as mf
 import hydra
-from hydra.utils import get_original_cwd
 from hydra.core.hydra_config import HydraConfig
-from omegaconf import DictConfig, OmegaConf
+from omegaconf import DictConfig
 
-
-def run_exists(run_id: str) -> bool:
-    try:
-        mlflow.get_run(run_id)
-    except mlflow.exceptions.MlflowException:
-        return False
-    return True
+sys.path.append('..')
+from utils.common import bootup_pipeline_component
 
 
 @hydra.main(version_base=None, config_path="../../config", config_name="params")
 def main(params: DictConfig) -> None:
     # Note, Hydra by default sends all log messages both to the console and a log file.
     # See https://hydra.cc/docs/1.2/tutorials/basic/running_your_app/logging/
-    logging.basicConfig(level=logging.INFO, format="%(asctime)-15s %(message)s")
-
-    info(f'Working directory: {Path.cwd()}')
-    log_file = HydraConfig.get().job_logging.handlers.file.filename
-    info(f'Log file: {log_file}')
-    dot_hydra = f'{HydraConfig.get().run.dir}/{HydraConfig.get().output_subdir}'
-    info(f'Hydra output sub-directory: {dot_hydra}')
+    # Hydra produces the log file only when initialized via the decorator, not if initialized with the Compose API
+    # See https://github.com/facebookresearch/hydra/issues/2456
+    log_file, dot_hydra = bootup_pipeline_component(params)
 
     seed = params.main.seed
-    # Note: to use Databricks, first make a Databricks account, install databricks-cli and run  `databricks configure`
-    tracking_uri = 'databricks' if params.main.use_databricks else '../../mlruns'
-    if not params.main.use_databricks:  # If it is a local path, MLFlow wants it to be absolute to function correctly
-        tracking_uri = str(Path(tracking_uri).absolute())
-    info(f'Tracking info will go to: {tracking_uri}')
-    mf.set_tracking_uri(tracking_uri)
-    experiment_name = params.main.experiment_name
-    mf.set_experiment(experiment_name)
-    info(f'Experiment name is: {experiment_name}')
 
     # Load and split the dataset
     info('Loading dataset ...')
