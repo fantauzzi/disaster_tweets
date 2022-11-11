@@ -1,0 +1,11 @@
+python: "3.10.7"
+# Dependencies required to build packages. Optional.
+build_dependencies:
+  - pip
+# Dependencies required to run the project.
+dependencies:
+  - tensorflow==2.10.0
+  - hydra-core==1.2.0
+  - mlflow==1.30.0
+  - datasets==2.6.1
+  - transformers==4.24.0

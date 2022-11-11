@@ -1,16 +1,18 @@
 main:
+  steps: all
   # If no MLFlow run is provided, the script will start its own run
   run_id:
   source_data: data/train.csv
   train_data: data/train
   val_data: data/val
   test_data: data/test
+  # Yes, the / in front of the experiment_name is needed!
   experiment_name: /disaster-tweets
   # Set use_databricks to False to store everything related to MLFlow in the local file system
-  use_databricks: False
+  use_databricks: True
   # trained_model is the already fine-tuned model to use for inference. If you want to fine-tune a model instead,
   # and use it for inference, then set trained_model to False
-  trained_model: /home/fanta/workspace/disaster_tweets/src/preprocess/../../mlruns/1/d397d207efaa499a986b47fa8d0c2dfd/artifacts/model
+  trained_model: file:///home/fanta/workspace/disaster_tweets/mlruns/1/7836feda401d467288a0707deb1d055e/artifacts/model
   seed: 42
 train:
   num_epochs: 2

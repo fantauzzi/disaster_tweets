@@ -2,7 +2,6 @@ import sys
 from pathlib import Path
 from logging import warning, info, error
 from datasets import Dataset
-from transformers import AutoTokenizer
 from transformers import TFAutoModelForSequenceClassification
 from transformers import create_optimizer
 import mlflow as mf
@@ -12,6 +11,7 @@ from omegaconf import DictConfig
 sys.path.append("..")
 from utils.common import unfold_config, bootup_pipeline_component, tokenize_dataset, tokenizer_from_pretrained
 
+# cd ../..; mlflow run --experiment-name  /disaster-tweets src/train/
 
 @hydra.main(version_base=None, config_path="../../config", config_name="params")
 def main(params: DictConfig) -> None:

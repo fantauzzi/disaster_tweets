@@ -1,0 +1,8 @@
+python: "3.10.7"
+# Dependencies required to build packages. Optional.
+build_dependencies:
+  - pip==22.3
+# Dependencies required to run the project.
+dependencies:
+  - hydra-core==1.2.0
+  - mlflow==1.30.0

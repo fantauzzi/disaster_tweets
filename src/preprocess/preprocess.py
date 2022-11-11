@@ -1,11 +1,8 @@
 import sys
-from pathlib import Path
-import logging
 from logging import warning, info, error
 from datasets import Dataset, Value, ClassLabel, Features
 import mlflow as mf
 import hydra
-from hydra.core.hydra_config import HydraConfig
 from omegaconf import DictConfig
 
 sys.path.append('..')
@@ -67,6 +64,6 @@ if __name__ == '__main__':
 '''
 Open Issues
 ===========
-
-
+Who should log the Parameters? Note that all MLFlow projects log .hydra among the artifacts anyway
+Add printing of the run name (rigth now printing only the ID)
 '''

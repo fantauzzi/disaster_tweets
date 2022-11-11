@@ -2,7 +2,6 @@ import sys
 from pathlib import Path
 from logging import warning, info, error
 from datasets import Dataset
-from transformers import AutoTokenizer
 from transformers import TFAutoModelForSequenceClassification
 from transformers import create_optimizer
 import mlflow as mf
