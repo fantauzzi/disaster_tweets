@@ -40,7 +40,7 @@ def run_exists(run_id: str) -> bool:
     return True
 
 
-def bootup_pipeline_component(params: DictConfig) -> (str, str):
+def bootup_pipeline_component(params: DictConfig, path_to_mlruns) -> (str, str):
     logging.basicConfig(level=logging.INFO, format="%(asctime)-15s %(message)s")
 
     info(f'Working directory: {Path.cwd()}')
@@ -50,9 +50,8 @@ def bootup_pipeline_component(params: DictConfig) -> (str, str):
     info(f'Hydra output sub-directory: {dot_hydra}')
 
     # Note: to use Databricks, first make a Databricks account, install databricks-cli and run  `databricks configure`
-    tracking_uri = 'databricks' if params.main.use_databricks else '../../mlruns'
-    if not params.main.use_databricks:  # If it is a local path, MLFlow wants it to be absolute to function correctly
-        tracking_uri = str(Path(tracking_uri).absolute())
+    # In case the tracking_uri refers to a local directory, then it must be an absolute path.
+    tracking_uri = 'databricks' if params.main.use_databricks else str(Path(path_to_mlruns).absolute())
     info(f'Tracking info will go to: {tracking_uri}')
     mf.set_tracking_uri(tracking_uri)
     experiment_name = params.main.experiment_name
@@ -64,6 +63,6 @@ def bootup_pipeline_component(params: DictConfig) -> (str, str):
 tokenizer_from_pretrained = AutoTokenizer.from_pretrained("bert-base-cased")
 
 
-def tokenize_dataset(data) -> BertTokenizerFast:  # TODO move it into utils
+def tokenize_dataset(data) -> BertTokenizerFast:
     # Keys of the returned dictionary will be added to the dataset as columns
     return tokenizer_from_pretrained(data["text"], padding='longest', truncation=True)

@@ -9,13 +9,23 @@ sys.path.append('..')
 from utils.common import bootup_pipeline_component
 
 
+def active_run_id() -> None| str:
+    active_run = mf.active_run()
+    if active_run is None:
+        return None
+    return active_run.info.run_id
+
+
 @hydra.main(version_base=None, config_path="../../config", config_name="params")
 def main(params: DictConfig) -> None:
     # Note, Hydra by default sends all log messages both to the console and a log file.
     # See https://hydra.cc/docs/1.2/tutorials/basic/running_your_app/logging/
     # Hydra produces the log file only when initialized via the decorator, not if initialized with the Compose API
     # See https://github.com/facebookresearch/hydra/issues/2456
-    log_file, dot_hydra = bootup_pipeline_component(params)
+    log_file, dot_hydra = bootup_pipeline_component(params=params, path_to_mlruns='../../mlruns')
+    active_run = mf.active_run()
+    info(f'MLFlow project preprocess started with active run ID: {active_run_id()}')
+    # mf.log_text('Howdy!', 'howdy.txt')
 
     seed = params.main.seed
 
@@ -44,9 +54,9 @@ def main(params: DictConfig) -> None:
     dataset.save_to_disk(train_data)
     dataset_test.save_to_disk(test_data)
     dataset_val.save_to_disk(val_data)
-    if params.main.run_id is not None:
-        info(f'Trying to resume run with ID {params.main.run_id}')
-    with mf.start_run(run_id=params.main.run_id):  # Start the MLFlow run
+    """if params.main.run_id is not None:
+        info(f'Trying to resume run with ID {params.main.run_id}')"""
+    with mf.start_run():  # Start the MLFlow run
         # Retrieve the run name MLflow has assigned. It's a tad convoluted, but it is what MLFlow allows
         mlflow_client = mf.MlflowClient()
         mlflow_run_data = mlflow_client.get_run(mf.active_run().info.run_id).data

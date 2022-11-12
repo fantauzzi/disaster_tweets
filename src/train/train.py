@@ -8,14 +8,15 @@ import mlflow as mf
 import hydra
 from omegaconf import DictConfig
 
-sys.path.append("..")
+sys.path.append("..")  # TODO use PYTHONPATH instead?
 from utils.common import unfold_config, bootup_pipeline_component, tokenize_dataset, tokenizer_from_pretrained
+
 
 # cd ../..; mlflow run --experiment-name  /disaster-tweets src/train/
 
 @hydra.main(version_base=None, config_path="../../config", config_name="params")
 def main(params: DictConfig) -> None:
-    log_file, dot_hydra = bootup_pipeline_component(params)
+    log_file, dot_hydra = bootup_pipeline_component(params=params, path_to_mlruns='../../mlruns')
     trained_model = params.main.trained_model
 
     # Fetch and load into memory the fine-tuned model ready for inference, if available, otherwise the pre-trained
