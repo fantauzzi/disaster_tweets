@@ -12,5 +12,16 @@ entry_points:
         description: Configuration parameters to override.
         type: str
         default: ''
-
     command: "python main.py main.steps=\\'{steps}\\' $(echo {overrides})"
+
+  preprocess:
+    command: >-
+      python preprocess.py
+
+  train:
+    command: >-
+      python train.py
+
+  test:
+    command: >-
+      python test.py

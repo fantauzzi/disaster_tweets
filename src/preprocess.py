@@ -6,23 +6,19 @@ import hydra
 from omegaconf import DictConfig
 
 sys.path.append('..')
-from utils.common import bootup_pipeline_component
+from utils.common import bootup_pipeline_component, active_run_id
 
 
-def active_run_id() -> None| str:
-    active_run = mf.active_run()
-    if active_run is None:
-        return None
-    return active_run.info.run_id
+# cd ..; mlflow run -e preprocess --experiment-name /disaster-tweets src
 
 
-@hydra.main(version_base=None, config_path="../../config", config_name="params")
+@hydra.main(version_base=None, config_path="../config", config_name="params")
 def main(params: DictConfig) -> None:
     # Note, Hydra by default sends all log messages both to the console and a log file.
     # See https://hydra.cc/docs/1.2/tutorials/basic/running_your_app/logging/
     # Hydra produces the log file only when initialized via the decorator, not if initialized with the Compose API
     # See https://github.com/facebookresearch/hydra/issues/2456
-    log_file, dot_hydra = bootup_pipeline_component(params=params, path_to_mlruns='../../mlruns')
+    log_file, dot_hydra = bootup_pipeline_component(params=params, path_to_mlruns='../mlruns')
     active_run = mf.active_run()
     info(f'MLFlow project preprocess started with active run ID: {active_run_id()}')
     # mf.log_text('Howdy!', 'howdy.txt')
@@ -37,7 +33,7 @@ def main(params: DictConfig) -> None:
                          'text': Value(dtype='string', id=None),
                          'target': ClassLabel(num_classes=2, names=['0', '1'], id=None)})
 
-    dataset = Dataset.from_csv(f'../../{params.main.source_data}', features=features)
+    dataset = Dataset.from_csv(f'../{params.main.source_data}', features=features)
     dataset = dataset.remove_columns(['id', 'keyword', 'location'])
     dataset = dataset.rename_column('target', 'label')
     dataset = dataset.train_test_split(test_size=.2, stratify_by_column='label', seed=seed)
@@ -48,9 +44,9 @@ def main(params: DictConfig) -> None:
     dataset = dataset['train']
     info(f'Train set size: {len(dataset)}   Val. set size: {len(dataset_val)}   Test set size: {len(dataset_test)}')
 
-    train_data = f'../../{params.main.train_data}'
-    test_data = f'../../{params.main.val_data}'
-    val_data = f'../../{params.main.test_data}'
+    train_data = f'../{params.main.train_data}'
+    test_data = f'../{params.main.val_data}'
+    val_data = f'../{params.main.test_data}'
     dataset.save_to_disk(train_data)
     dataset_test.save_to_disk(test_data)
     dataset_val.save_to_disk(val_data)

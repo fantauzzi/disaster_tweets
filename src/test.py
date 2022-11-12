@@ -12,9 +12,9 @@ sys.path.append("..")
 from utils.common import unfold_config, bootup_pipeline_component, tokenize_dataset, tokenizer_from_pretrained
 
 
-@hydra.main(version_base=None, config_path="../../config", config_name="params")
+@hydra.main(version_base=None, config_path="../config", config_name="params")
 def main(params: DictConfig) -> None:
-    log_file, dot_hydra = bootup_pipeline_component(params=params, path_to_mlruns='../../mlruns')
+    log_file, dot_hydra = bootup_pipeline_component(params=params, path_to_mlruns='../mlruns')
     trained_model = params.main.trained_model
 
     # Fetch and load into memory the fine-tuned model ready for inference, if available, otherwise the pre-trained
@@ -29,7 +29,7 @@ def main(params: DictConfig) -> None:
     info(f'Loading fine-tuned model from {local_trained_model}')
     model = TFAutoModelForSequenceClassification.from_pretrained(f'{local_trained_model}')
 
-    test_data = f'../../{params.main.val_data}'
+    test_data = f'../{params.main.val_data}'
     dataset_test = Dataset.load_from_disk(test_data)
 
     # tokenizer = AutoTokenizer.from_pretrained("bert-base-cased")

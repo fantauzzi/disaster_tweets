@@ -66,3 +66,10 @@ tokenizer_from_pretrained = AutoTokenizer.from_pretrained("bert-base-cased")
 def tokenize_dataset(data) -> BertTokenizerFast:
     # Keys of the returned dictionary will be added to the dataset as columns
     return tokenizer_from_pretrained(data["text"], padding='longest', truncation=True)
+
+
+def active_run_id() -> None | str:
+    active_run = mf.active_run()
+    if active_run is None:
+        return None
+    return active_run.info.run_id

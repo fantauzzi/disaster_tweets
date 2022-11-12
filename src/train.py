@@ -12,11 +12,11 @@ sys.path.append("..")  # TODO use PYTHONPATH instead?
 from utils.common import unfold_config, bootup_pipeline_component, tokenize_dataset, tokenizer_from_pretrained
 
 
-# cd ../..; mlflow run --experiment-name  /disaster-tweets src/train/
+# cd ..; mlflow run --experiment-name  /disaster-tweets src/train/
 
-@hydra.main(version_base=None, config_path="../../config", config_name="params")
+@hydra.main(version_base=None, config_path="../config", config_name="params")
 def main(params: DictConfig) -> None:
-    log_file, dot_hydra = bootup_pipeline_component(params=params, path_to_mlruns='../../mlruns')
+    log_file, dot_hydra = bootup_pipeline_component(params=params, path_to_mlruns='../mlruns')
     trained_model = params.main.trained_model
 
     # Fetch and load into memory the fine-tuned model ready for inference, if available, otherwise the pre-trained
@@ -32,8 +32,8 @@ def main(params: DictConfig) -> None:
         info('Fetching pre-trained bert-base-cased for fine-tuning')
         model = TFAutoModelForSequenceClassification.from_pretrained("bert-base-cased")
 
-    train_data = f'../../{params.main.train_data}'
-    val_data = f'../../{params.main.test_data}'
+    train_data = f'../{params.main.train_data}'
+    val_data = f'../{params.main.test_data}'
     dataset = Dataset.load_from_disk(train_data)
     dataset_val = Dataset.load_from_disk(val_data)
 
@@ -71,7 +71,7 @@ def main(params: DictConfig) -> None:
         # If the pre-trained model hasn't been fine-tuned, then fine-tune and evaluate it now, and send it to MLFlow
         # as an artifact (not using MLFlow models here)
         if local_trained_model is None or not Path(local_trained_model).exists():
-            model_dir = '../../model'
+            model_dir = '../model'
             info('No fine-tuned mode available, therefore fine-tuning the pre-trained model')
             model.fit(tf_dataset, validation_data=tf_dataset_val, epochs=num_epochs)
             model.save_pretrained(save_directory=model_dir)
@@ -79,6 +79,7 @@ def main(params: DictConfig) -> None:
             mf.log_artifact(local_path=model_dir)
             info(
                 f'The fine-tuned model has been logged with MLFlow; directory {model_dir} can now be removed, if desired')
+            # TODO log training metrics with MLFlow, e.g. train/validation curves and training time
         else:
             info('Fine-tuned model is already available, no model needs to be fine-tuned here.')
 

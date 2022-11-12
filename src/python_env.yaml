@@ -6,4 +6,6 @@ build_dependencies:
 dependencies:
   - hydra-core==1.2.0
   - mlflow==1.30.0
+  - tensorflow==2.10.0
   - transformers==4.24.0
+  - datasets==2.6.1
