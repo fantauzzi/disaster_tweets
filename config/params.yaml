@@ -12,7 +12,7 @@ main:
   use_databricks: False
   # trained_model is the already fine-tuned model to use for inference. If you want to fine-tune a model instead,
   # and use it for inference, then set trained_model to False
-  trained_model: /home/fanta/workspace/disaster_tweets/src/../mlruns/1/818249c223084e80be9d37c153ac4dc7/artifacts/model
+  trained_model:
   seed: 42
 train:
   num_epochs: 2

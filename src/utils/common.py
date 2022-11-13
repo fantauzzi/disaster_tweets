@@ -2,7 +2,7 @@ import logging
 from logging import info
 from pathlib import Path
 import mlflow as mf
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
 from hydra.core.hydra_config import HydraConfig
 from transformers import AutoTokenizer, BertTokenizerFast
 
@@ -73,3 +73,9 @@ def active_run_id() -> None | str:
     if active_run is None:
         return None
     return active_run.info.run_id
+
+
+def hydra_overrides_task_to_dict(task: list[str]) -> dict:  # TODO remove if not used ever
+    as_list = OmegaConf.to_object(task)
+    as_dict = {item[:item.find('=')]: item[item.find('=') + 1:] for item in as_list}
+    return as_dict

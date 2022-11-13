@@ -2,6 +2,7 @@ from pathlib import Path
 import hydra
 from omegaconf import DictConfig
 import mlflow as mf
+from hydra.core.hydra_config import HydraConfig
 
 from utils.common import bootup_pipeline_component
 
@@ -14,12 +15,25 @@ def main(params: DictConfig):
     for step in required_steps:
         assert step in available_steps
     experiment_name = params.main.experiment_name
+    task = HydraConfig.get().overrides.task
+    # params_override = hydra_overrides_task_to_dict(task)
+    params_override = ' '.join(task)
 
     if 'preprocess' in required_steps:
-        mf.run(uri=str(Path(hydra.utils.get_original_cwd()) / 'preprocess'),
-               entry_point='main',
+        mf.run(uri=str(Path(hydra.utils.get_original_cwd()) / '.'),
+               entry_point='preprocess',
                experiment_name=experiment_name,
-               parameters={})
+               parameters={'overrides': params_override})
+    if 'train' in required_steps:
+        mf.run(uri=str(Path(hydra.utils.get_original_cwd()) / '.'),
+               entry_point='train',
+               experiment_name=experiment_name,
+               parameters={'overrides': params_override})
+    if 'test' in required_steps:
+        mf.run(uri=str(Path(hydra.utils.get_original_cwd()) / '.'),
+               entry_point='test',
+               experiment_name=experiment_name,
+               parameters={'overrides': params_override})
 
 
 if __name__ == '__main__':
